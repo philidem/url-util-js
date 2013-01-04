@@ -1,5 +1,4 @@
 {
-    "type": "raptor-module",
     "name": "url-util",
     "version": "1.0.0",
     "description": "JavaScript AMD library for working with URLs for use on client-side or server-side",
@@ -12,7 +11,7 @@
     ],
     "main": "./lib/url-util/url-util",
     "devDependencies": {
-        "raptor": "*",
+        "raptor": "~2.0.2",
         "jasmine-node": "~1.0.26"
     },
     "raptor": {
