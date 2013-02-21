@@ -1,6 +1,6 @@
 {
     "name": "url-util",
-    "version": "1.1.0",
+    "version": "1.0.0",
     "description": "JavaScript AMD library for working with URLs for use on client-side or server-side",
     "homepage": "https://github.com/philidem/url-util-js",
     "authors": [
@@ -9,9 +9,9 @@
             "email": "phillip.gates-idem@gmail.com"
         }
     ],
-    "main": "./lib/url-util/url-util",
+    "main": "./url-util",
     "devDependencies": {
-        "raptor": "~2.0.2",
+        "raptor": "2.x",
         "jasmine-node": "~1.0.26"
     },
     "raptor": {
