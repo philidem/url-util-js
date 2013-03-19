@@ -10,8 +10,7 @@ packaging.load(packaging.getPackageManifest(moduleManifest));
 
 var urlUtil = require('url-util');
 
-var URL = require('url-util/URL');
-
+var URL = urlUtil.URL;
 
 describe('url-util/URL', function() {
     
