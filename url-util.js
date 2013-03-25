@@ -244,6 +244,22 @@
                 return (this.queryString)
                     ? this.path + '?' + this.queryString
                     : this.path;
+            },
+
+            getPort : function() {
+                if (this.port !== undefined) {
+                    return this.port;
+                }
+
+                if (this.protocol === 'http') {
+                    return 80;
+                }
+
+                if (this.protocol === 'https') {
+                    return 443;
+                }
+
+                return undefined;
             }
         };
 
