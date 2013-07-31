@@ -264,7 +264,7 @@
         };
 
         function QueryString(queryString) {
-            this.parameterMap = {};
+            this._params = {};
 
             if (queryString) {
                 this.parse(queryString);
@@ -324,7 +324,7 @@
              * @param {String} name parameter name
              */
             remove : function(name) {
-                delete this.parameterMap[name];
+                delete this._params[name];
             },
 
             /**
@@ -337,7 +337,7 @@
                 if (value === null) {
                     this.remove(name);
                 } else {
-                    this.parameterMap[name] = value;
+                    this._params[name] = value;
                 }
             },
 
@@ -348,7 +348,7 @@
              * @param {Strign} value parameter value
              */
             add : function(name, value) {
-                var existingValue = this.parameterMap[name];
+                var existingValue = this._params[name];
 
                 if (existingValue !== undefined) {
                     if (existingValue.constructor === Array) {
@@ -365,7 +365,7 @@
                     }
                 }
 
-                this.parameterMap[name] = value;
+                this._params[name] = value;
             },
 
             /**
@@ -374,7 +374,7 @@
              * @param {String} name parameter name
              */
             get : function(name) {
-                var value = this.parameterMap[name];
+                var value = this._params[name];
                 if (value === undefined) {
                     return null;
                 }
@@ -388,7 +388,7 @@
              * contains the single item.
              */
             getValues : function(name) {
-                var value = this.parameterMap[name];
+                var value = this._params[name];
                 if (value === undefined) {
                     return null;
                 }
@@ -408,9 +408,9 @@
             toString : function() {
                 var parts = [];
 
-                for ( var name in this.parameterMap) {
-                    if (this.parameterMap.hasOwnProperty(name)) {
-                        var value = this.parameterMap[name];
+                for ( var name in this._params) {
+                    if (this._params.hasOwnProperty(name)) {
+                        var value = this._params[name];
 
                         if ((value === undefined) || (value === null)) {
                             parts.push(name);
