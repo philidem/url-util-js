@@ -284,6 +284,11 @@
         };
 
         QueryString.prototype = {
+
+            getParameters: function() {
+                return this._params;
+            },
+
             parse : function(queryString) {
 
                 if (typeof queryString === 'object') {
@@ -399,6 +404,7 @@
                     return [ value ];
                 }
             },
+
 
             /**
              * converts the URL to its string representation
