@@ -118,7 +118,7 @@ function _parseUrl(url, obj) {
         } else {
             obj.path = url.substring(0, pos);
             if ((pos + 1) < url.length) {
-                obj.queryString = new QueryString(url.substring(pos + 1));
+                obj.query = new Query(url.substring(pos + 1));
             }
         }
     } else {
@@ -126,36 +126,36 @@ function _parseUrl(url, obj) {
     }
 }
 
-function QueryString(queryString) {
+function Query(query) {
     this._params = {};
 
-    if (queryString) {
-        this.parse(queryString);
+    if (query) {
+        this.parse(query);
     }
 }
 
-QueryString.parse = function(queryString) {
-    if (!queryString) {
-        return new QueryString();
+Query.parse = function(query) {
+    if (!query) {
+        return new Query();
     }
 
-    if (queryString.constructor === QueryString) {
-        return queryString;
+    if (query.constructor === Query) {
+        return query;
     } else {
-        return new QueryString(queryString.toString());
+        return new Query(query.toString());
     }
 };
 
-QueryString.prototype = {
+Query.prototype = {
 
     getParameters: function() {
         return this._params;
     },
 
-    parse: function(queryString) {
+    parse: function(query) {
         var pos;
-        if (queryString.constructor === String) {
-            var parameters = queryString.split('&');
+        if (query.constructor === String) {
+            var parameters = query.split('&');
 
             for (var i = 0; i < parameters.length; i++) {
                 var param = parameters[i];
@@ -178,9 +178,9 @@ QueryString.prototype = {
                 this.add(name, value);
             }
         } else {
-            for (var key in queryString) {
-                if (queryString.hasOwnProperty(key)) {
-                    this.add(key, queryString[key]);
+            for (var key in query) {
+                if (query.hasOwnProperty(key)) {
+                    this.add(key, query[key]);
                 }
             }
         }
@@ -298,13 +298,13 @@ QueryString.prototype = {
     }
 };
 
-function URL(url, queryString) {
+function URL(url, query) {
     if (url) {
         _parseUrl(url, this);
     }
 
-    if (queryString) {
-        this.getQueryString().parse(queryString);
+    if (query) {
+        this.getQuery().parse(query);
     }
 }
 
@@ -318,16 +318,16 @@ URL.prototype = {
         return this.path;
     },
 
-    getQueryString: function() {
-        if (!this.queryString) {
-            this.queryString = new QueryString();
+    getQuery: function() {
+        if (!this.query) {
+            this.query = new Query();
         }
 
-        return this.queryString;
+        return this.query;
     },
 
-    setQueryString: function(queryString) {
-        this.queryString = QueryString.parse(queryString);
+    setQuery: function(query) {
+        this.query = Query.parse(query);
     },
 
     /**
@@ -336,7 +336,7 @@ URL.prototype = {
      * @return {String} string representation of URL
      */
     toString: function() {
-        var queryString = (this.queryString) ? this.queryString.toString() : null;
+        var query = (this.query) ? this.query.toString() : null;
 
         var str = '';
         
@@ -354,14 +354,24 @@ URL.prototype = {
             str += this.port;
         }
         
-        str += this.path;
+        if (this.path) {
+            str += this.path;
+        }
         
-        if (queryString) {
+        if (query) {
+            if (!this.path) {
+                str += '/';
+            }
+
             str += '?';
-            str += queryString;
+            str += query;
         }
 
         if (this.hash) {
+            if (!this.path) {
+                str += '/';
+            }
+            
             str += '#';
             str += this.hash;
         }
@@ -376,7 +386,7 @@ URL.prototype = {
      *            name parameter name
      */
     removeParameter: function(name) {
-        this.getQueryString().removeParameter(name);
+        this.getQuery().removeParameter(name);
     },
 
     /**
@@ -388,7 +398,7 @@ URL.prototype = {
      *            value parameter value
      */
     setParameter: function(name, value) {
-        this.getQueryString().setParameter(name, value);
+        this.getQuery().setParameter(name, value);
     },
 
     /**
@@ -398,11 +408,11 @@ URL.prototype = {
      *            name parameter name
      */
     getParameter: function(name) {
-        return this.getQueryString().getParameter(name);
+        return this.getQuery().getParameter(name);
     },
 
-    getPathWithQueryString: function() {
-        return (this.queryString) ? this.path + '?' + this.queryString
+    getPathWithQuery: function() {
+        return (this.query) ? this.path + '?' + this.query
                                   : this.path;
     },
 
@@ -420,15 +430,43 @@ URL.prototype = {
         }
 
         return undefined;
+    },
+
+    getHost: function() {
+        return this.host;
+    },
+
+    getHash: function() {
+        return this.hash;
+    },
+
+    getProtocol: function() {
+        return this.protocol;
+    },
+
+    removePort: function() {
+        delete this.port;
+    },
+
+    removeQuery: function() {
+        delete this.query;
+    },
+
+    removePath: function() {
+        delete this.path;
     }
 };
 
 module.exports = {
+    URL: URL,
+    
+    Query: Query,
+
     create: function() {
         return new URL();
     },
 
-    parse: function(url, queryString) {
-        return new URL(url, queryString);
+    parse: function(url, query) {
+        return new URL(url, query);
     }
 };
