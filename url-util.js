@@ -179,17 +179,7 @@ function Query(query) {
     }
 }
 
-Query.parse = function(query) {
-    if (!query) {
-        return new Query();
-    }
 
-    if (query.constructor === Query) {
-        return query;
-    } else {
-        return new Query(query);
-    }
-};
 
 Query.prototype = {
 
@@ -449,6 +439,30 @@ URL.prototype = {
     }
 };
 
+URL.parse = function(url) {
+    if (!url) {
+        return new URL();
+    }
+
+    if (url.constructor === URL) {
+        return url;
+    } else {
+        return new URL(url);
+    }
+};
+
+Query.parse = function(query) {
+    if (!query) {
+        return new Query();
+    }
+
+    if (query.constructor === Query) {
+        return query;
+    } else {
+        return new Query(query);
+    }
+};
+
 module.exports = {
     URL: URL,
     
@@ -459,6 +473,6 @@ module.exports = {
     },
 
     parse: function(url, query) {
-        return new URL(url, query);
+        return URL.parse(url, query);
     }
 };
