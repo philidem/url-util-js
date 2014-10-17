@@ -38,7 +38,7 @@ function _parseNetworkLocation(networkLocation, obj) {
     }
 }
 
-function _parseUrl(url, obj) {
+function _parseUrl(obj, url) {
 
     var pos;
 
@@ -113,12 +113,13 @@ function _parseUrl(url, obj) {
          * character then the remaining portion is just the path.
          */
         pos = url.indexOf('?');
+
         if (pos === -1) {
             obj.path = url;
         } else {
             obj.path = url.substring(0, pos);
             if ((pos + 1) < url.length) {
-                obj.query = new Query(url.substring(pos + 1));
+                obj._query = new Query(url.substring(pos + 1));
             }
         }
     } else {
@@ -126,11 +127,55 @@ function _parseUrl(url, obj) {
     }
 }
 
-function Query(query) {
-    this._params = {};
+function _parseQueryString(obj, queryStr) {
+    var parameters = queryStr.split('&');
 
+    var pos;
+    for (var i = 0; i < parameters.length; i++) {
+        var param = parameters[i];
+        pos = param.indexOf('=');
+
+        var name, value;
+
+        if (pos == -1) {
+            name = param;
+            value = null;
+        } else {
+            name = param.substring(0, pos);
+            value = decodeURIComponent(param.substring(pos + 1));
+        }
+
+        if (name === '') {
+            continue;
+        }
+
+        obj.add(name, value);
+    }
+}
+
+function _parseQuery(obj, query) {
+    if (query.constructor === String) {
+        _parseQueryString(obj, query);
+    } else {
+        for (var key in query) {
+            if (query.hasOwnProperty(key)) {
+                obj.add(key, query[key]);
+            }
+        }
+    }
+}
+
+function Query(query) {
     if (query) {
-        this.parse(query);
+        if (query.constructor === String) {
+            this._params = {};
+            _parseQueryString(this, query);
+        } else {
+            // initial params is simply the query obj
+            this._params = query;
+        }
+    } else {
+        this._params = {};
     }
 }
 
@@ -142,48 +187,14 @@ Query.parse = function(query) {
     if (query.constructor === Query) {
         return query;
     } else {
-        return new Query(query.toString());
+        return new Query(query);
     }
 };
 
 Query.prototype = {
 
-    getParameters: function() {
+    object: function() {
         return this._params;
-    },
-
-    parse: function(query) {
-        var pos;
-        if (query.constructor === String) {
-            var parameters = query.split('&');
-
-            for (var i = 0; i < parameters.length; i++) {
-                var param = parameters[i];
-                pos = param.indexOf('=');
-
-                var name, value;
-
-                if (pos == -1) {
-                    name = param;
-                    value = null;
-                } else {
-                    name = param.substring(0, pos);
-                    value = decodeURIComponent(param.substring(pos + 1));
-                }
-
-                if (name === '') {
-                    continue;
-                }
-
-                this.add(name, value);
-            }
-        } else {
-            for (var key in query) {
-                if (query.hasOwnProperty(key)) {
-                    this.add(key, query[key]);
-                }
-            }
-        }
     },
 
     /**
@@ -198,10 +209,21 @@ Query.prototype = {
     /**
      * sets the value of a query string parameter
      *
-     * @param {String} name parameter name
+     * @param {String|Object} name parameter name or object that contains name/value pairs
      * @param {Strign} value parameter value
      */
     set: function(name, value) {
+        if (arguments.length === 1) {
+            if (name.constructor !== String) {
+                var obj = arguments[0];
+                for (name in obj) {
+                    if (obj.hasOwnProperty(name)) {
+                        this._params[name] = obj[name];
+                    }
+                }
+                return;
+            }
+        }
         if (value === null) {
             this.remove(name);
         } else {
@@ -219,8 +241,8 @@ Query.prototype = {
         var existingValue = this._params[name];
 
         if (existingValue !== undefined) {
-            if (existingValue.constructor === Array) {
-                if (value.constructor === Array) {
+            if (Array.isArray(existingValue)) {
+                if (Array.isArray(value)) {
                     for ( var i = 0; i < value.length; i++) {
                         existingValue.push(value[i]);
                     }
@@ -261,7 +283,7 @@ Query.prototype = {
             return null;
         }
 
-        if (value.constructor === Array) {
+        if (Array.isArray(value)) {
             return value;
         } else {
             return [ value ];
@@ -283,8 +305,7 @@ Query.prototype = {
 
                 if ((value === undefined) || (value === null)) {
                     parts.push(name);
-                } else if (value.constructor === Array) {
-
+                } else if (Array.isArray(value)) {
                     for ( var i = 0; i < value.length; i++) {
                         parts.push(name + '=' + encodeURIComponent(value[i]));
                     }
@@ -300,11 +321,15 @@ Query.prototype = {
 
 function URL(url, query) {
     if (url) {
-        _parseUrl(url, this);
+        _parseUrl(this, url);
     }
 
     if (query) {
-        this.getQuery().parse(query);
+        if (this._query) {
+            _parseQuery(this._query, query);
+        } else {
+            this._query = Query.parse(query);
+        }
     }
 }
 
@@ -319,15 +344,15 @@ URL.prototype = {
     },
 
     getQuery: function() {
-        if (!this.query) {
-            this.query = new Query();
+        if (!this._query) {
+            this._query = new Query();
         }
 
-        return this.query;
+        return this._query;
     },
 
     setQuery: function(query) {
-        this.query = Query.parse(query);
+        this._query = Query.parse(query);
     },
 
     /**
@@ -336,7 +361,7 @@ URL.prototype = {
      * @return {String} string representation of URL
      */
     toString: function() {
-        var query = (this.query) ? this.query.toString() : null;
+        var query = (this._query) ? this._query.toString() : null;
 
         var str = '';
         
@@ -379,41 +404,8 @@ URL.prototype = {
         return str;
     },
 
-    /**
-     * removes a parameter from the query string
-     *
-     * @param {String}
-     *            name parameter name
-     */
-    removeParameter: function(name) {
-        this.getQuery().removeParameter(name);
-    },
-
-    /**
-     * sets the value of a query string parameter
-     *
-     * @param {String}
-     *            name parameter name
-     * @param {Strign}
-     *            value parameter value
-     */
-    setParameter: function(name, value) {
-        this.getQuery().setParameter(name, value);
-    },
-
-    /**
-     * retrieves a value of parameter from the query string
-     *
-     * @param {String}
-     *            name parameter name
-     */
-    getParameter: function(name) {
-        return this.getQuery().getParameter(name);
-    },
-
     getPathWithQuery: function() {
-        return (this.query) ? this.path + '?' + this.query
-                                  : this.path;
+        return (this._query) ? this.path + '?' + this._query : this.path;
     },
 
     getPort: function() {
@@ -449,7 +441,7 @@ URL.prototype = {
     },
 
     removeQuery: function() {
-        delete this.query;
+        delete this._query;
     },
 
     removePath: function() {

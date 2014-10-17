@@ -1,7 +1,7 @@
 {
   "name": "url-util",
-  "version": "1.2.1",
-  "description": "JavaScript AMD library for working with URLs for use on client-side or server-side",
+  "version": "1.2.2",
+  "description": "Simple JavaScript module for working with URLs for use on client-side or server-side",
   "homepage": "https://github.com/philidem/url-util-js",
   "authors": [
     {
