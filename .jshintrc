@@ -1,16 +1,25 @@
 {
+    "browser": false,
+    "esnext": true,
     "globals": {
-        "require": true
+        "__filename": true,
+        "__dirname": true,
+        "require": true,
+        "module": true,
+        "exports": true,
+        "setTimeout": true
     },
-
-    "node" : true,
-    "es5" : false,
-    "browser" : true,
-    "boss" : false,
-    "curly": false,
+    "strict": false,
+    "globalstrict": true,
+    "quotmark": "single",
+    "smarttabs": true,
+    "trailing": true,
+    "unused": "vars",
+    "curly": true,
     "debug": false,
-    "devel": false,
+    "devel": true,
     "eqeqeq": true,
+    "eqnull": true,
     "evil": true,
     "forin": false,
     "immed": true,
@@ -22,15 +31,10 @@
     "nomen": false,
     "onevar": false,
     "plusplus": false,
-    "regexp": false,
     "undef": true,
     "sub": false,
     "white": false,
     "eqeqeq": false,
     "latedef": "nofunc",
-    "unused": "vars",
-    "strict": false,
-    
-    /* Relaxing options: */
-    "eqnull": true
+    "sub": true
 }
