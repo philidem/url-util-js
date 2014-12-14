@@ -1,6 +1,6 @@
 {
   "name": "url-util",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Simple JavaScript module for working with URLs for use on client-side or server-side",
   "homepage": "https://github.com/philidem/url-util-js",
   "authors": [
@@ -16,10 +16,5 @@
   "devDependencies": {
     "chai": "^1.9.2",
     "mocha": "^1.21.4"
-  },
-  "raptor": {
-    "dependencies": [
-      "url-util.js"
-    ]
   }
 }

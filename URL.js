@@ -157,120 +157,120 @@ var URL = module.exports = function URL(url, query) {
 	}
 };
 
-URL.prototype = {
-	
-	setPath: function(path) {
-		this.path = path;
-	},
-	
-	getPath: function() {
-		return this.path;
-	},
-	
-	getQuery: function() {
-		if (!this._query) {
-			this._query = new Query();
-		}
-		
-		return this._query;
-	},
-	
-	setQuery: function(query) {
-		this._query = Query.parse(query);
-	},
-	
-	/**
-	* converts the URL to its string representation
-	*
-	* @return {String} string representation of URL
-	*/
-	toString: function() {
-		var query = (this._query) ? this._query.toString() : null;
-		
-		var str = '';
-		
-		if (this.protocol) {
-			str += this.protocol;
-			str += '://';
-		}
-		
-		if (this.host !== undefined) {
-			str += this.host;
-		}
-		
-		if (this.port !== undefined) {
-			str += ':';
-			str += this.port;
-		}
-		
-		if (this.path) {
-			str += this.path;
-		}
-		
-		if (query) {
-			if (!this.path) {
-				str += '/';
-			}
-			
-			str += '?';
-			str += query;
-		}
-		
-		if (this.hash) {
-			if (!this.path) {
-				str += '/';
-			}
-			
-			str += '#';
-			str += this.hash;
-		}
-		
-		return str;
-	},
-	
-	getPathWithQuery: function() {
-		return (this._query) ? this.path + '?' + this._query : this.path;
-	},
-	
-	getPort: function() {
-		if (this.port !== undefined) {
-			return this.port;
-		}
-		
-		if (this.protocol === 'http') {
-			return 80;
-		}
-		
-		if (this.protocol === 'https') {
-			return 443;
-		}
-		
-		return undefined;
-	},
-	
-	getHost: function() {
-		return this.host;
-	},
-	
-	getHash: function() {
-		return this.hash;
-	},
-	
-	getProtocol: function() {
-		return this.protocol;
-	},
-	
-	removePort: function() {
-		delete this.port;
-	},
-	
-	removeQuery: function() {
-		delete this._query;
-	},
-	
-	removePath: function() {
-		delete this.path;
+var URL_prototype = URL.prototype;
+
+
+URL_prototype.setPath = function(path) {
+	this.path = path;
+};
+
+URL_prototype.getPath = function() {
+	return this.path;
+};
+
+URL_prototype.getQuery = function() {
+	if (!this._query) {
+		this._query = new Query();
 	}
+	
+	return this._query;
+};
+
+URL_prototype.setQuery = function(query) {
+	this._query = Query.parse(query);
+};
+
+/**
+* converts the URL to its string representation
+*
+* @return {String} string representation of URL
+*/
+URL_prototype.toString = function() {
+	var query = (this._query) ? this._query.toString() : null;
+	
+	var str = '';
+	
+	if (this.protocol) {
+		str += this.protocol;
+		str += '://';
+	}
+	
+	if (this.host !== undefined) {
+		str += this.host;
+	}
+	
+	if (this.port !== undefined) {
+		str += ':';
+		str += this.port;
+	}
+	
+	if (this.path) {
+		str += this.path;
+	}
+	
+	if (query) {
+		if (!this.path) {
+			str += '/';
+		}
+		
+		str += '?';
+		str += query;
+	}
+	
+	if (this.hash) {
+		if (!this.path) {
+			str += '/';
+		}
+		
+		str += '#';
+		str += this.hash;
+	}
+	
+	return str;
+};
+
+URL_prototype.getPathWithQuery = function() {
+	return (this._query) ? this.path + '?' + this._query : this.path;
+};
+
+URL_prototype.getPort = function() {
+	if (this.port !== undefined) {
+		return this.port;
+	}
+	
+	if (this.protocol === 'http') {
+		return 80;
+	}
+	
+	if (this.protocol === 'https') {
+		return 443;
+	}
+	
+	return undefined;
+};
+
+URL_prototype.getHost = function() {
+	return this.host;
+};
+
+URL_prototype.getHash = function() {
+	return this.hash;
+};
+
+URL_prototype.getProtocol = function() {
+	return this.protocol;
+};
+
+URL_prototype.removePort = function() {
+	delete this.port;
+};
+
+URL_prototype.removeQuery = function() {
+	delete this._query;
+};
+
+URL_prototype.removePath = function() {
+	delete this.path;
 };
 
 URL.parse = function(url) {
