@@ -43,6 +43,14 @@ function _parseNetworkLocation(networkLocation, obj) {
 }
 
 function _parseUrl(obj, url) {
+	if (url.constructor !== String) {
+		for (var key in url) {
+			if (url.hasOwnProperty(key)) {
+				obj[key] = url[key];
+			}
+		}
+		return;
+	}
 	
 	var pos;
 	
