@@ -154,6 +154,10 @@ function _parseQuery(obj, query) {
 var URL = module.exports = function URL(url, query) {
 	if (url) {
 		_parseUrl(this, url);
+		
+		if (this._query) {
+			this._query = Query.parse(this._query);
+		}
 	}
 	
 	if (query) {
