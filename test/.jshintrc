@@ -5,10 +5,14 @@
         "describe": true
     },
 
-    "node" : true,
-    "es5" : false,
-    "browser" : true,
-    "boss" : false,
+    "predef": [
+        "-URL"
+    ],
+
+    "node": true,
+    "es5": false,
+    "browser": true,
+    "boss": false,
     "curly": false,
     "debug": false,
     "devel": false,
@@ -32,7 +36,5 @@
     "latedef": true,
     "unused": "vars",
     "strict": false,
-    
-    /* Relaxing options: */
     "eqnull": true
 }
