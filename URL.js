@@ -19,7 +19,7 @@ function _isValidProtocol(protocol) {
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -51,9 +51,9 @@ function _parseUrl(obj, url) {
 		}
 		return;
 	}
-	
+
 	var pos;
-	
+
 	/*
 	* parse the fragment (part after hash symbol) first according to
 	* RFC
@@ -63,11 +63,11 @@ function _parseUrl(obj, url) {
 		if ((pos + 1) < url.length) {
 			obj.hash = url.substring(pos + 1);
 		}
-		
+
 		/* continue parsing everything before the hash symbol */
 		url = url.substring(0, pos);
 	}
-	
+
 	/* parse the protocol according to RFC */
 	pos = url.indexOf(':');
 	if (pos !== -1) {
@@ -76,11 +76,11 @@ function _parseUrl(obj, url) {
 		* doesn't contain any invalid characters..
 		*/
 		var possibleProtocol = url.substring(0, pos).toLowerCase();
-		
+
 		if (_isValidProtocol(possibleProtocol)) {
 			obj.protocol = possibleProtocol;
 			pos++;
-			
+
 			if (pos === url.length) {
 				/*
 				* reached the end of the string (input was something
@@ -88,16 +88,16 @@ function _parseUrl(obj, url) {
 				*/
 				return;
 			}
-			
+
 			/* continue parsing everything past the protocol */
 			url = url.substring(pos);
 		}
 	}
-	
+
 	if ((url.charAt(0) === '/') && (url.charAt(1) === '/')) {
-		
+
 		// URL will contain network location (i.e. <host>:<port>)
-		
+
 		/* find where the path part starts */
 		pos = url.indexOf('/', 2);
 		if (pos === -1) {
@@ -117,7 +117,7 @@ function _parseUrl(obj, url) {
 			url = url.substring(pos);
 		}
 	}
-	
+
 	var protocol = obj.protocol;
 	if (!protocol || (protocol === 'http') || (protocol === 'https')) {
 		/*
@@ -125,7 +125,7 @@ function _parseUrl(obj, url) {
 		* character then the remaining portion is just the path.
 		*/
 		pos = url.indexOf('?');
-		
+
 		if (pos === -1) {
 			obj.path = url;
 		} else {
@@ -154,12 +154,12 @@ function _parseQuery(obj, query) {
 var URL = module.exports = function URL(url, query) {
 	if (url) {
 		_parseUrl(this, url);
-		
+
 		if (this._query) {
 			this._query = Query.parse(this._query);
 		}
 	}
-	
+
 	if (query) {
 		if (this._query) {
 			_parseQuery(this._query, query);
@@ -184,7 +184,7 @@ URL_prototype.getQuery = function() {
 	if (!this._query) {
 		this._query = new Query();
 	}
-	
+
 	return this._query;
 };
 
@@ -199,45 +199,45 @@ URL_prototype.setQuery = function(query) {
 */
 URL_prototype.toString = function() {
 	var query = (this._query) ? this._query.toString() : null;
-	
+
 	var str = '';
-	
+
 	if (this.protocol) {
 		str += this.protocol;
 		str += '://';
 	}
-	
+
 	if (this.host !== undefined) {
 		str += this.host;
 	}
-	
+
 	if (this.port !== undefined) {
 		str += ':';
 		str += this.port;
 	}
-	
+
 	if (this.path) {
 		str += this.path;
 	}
-	
+
 	if (query) {
 		if (!this.path) {
 			str += '/';
 		}
-		
+
 		str += '?';
 		str += query;
 	}
-	
+
 	if (this.hash) {
 		if (!this.path) {
 			str += '/';
 		}
-		
+
 		str += '#';
 		str += this.hash;
 	}
-	
+
 	return str;
 };
 
@@ -249,15 +249,15 @@ URL_prototype.getPort = function() {
 	if (this.port !== undefined) {
 		return this.port;
 	}
-	
+
 	if (this.protocol === 'http') {
 		return 80;
 	}
-	
+
 	if (this.protocol === 'https') {
 		return 443;
 	}
-	
+
 	return undefined;
 };
 
@@ -285,14 +285,17 @@ URL_prototype.removePath = function() {
 	delete this.path;
 };
 
-URL.parse = function(url) {
+URL.parse = function(url, query) {
 	if (!url) {
-		return new URL();
+		return new URL(null, query);
 	}
-	
+
 	if (url.constructor === URL) {
+		if (query) {
+			url.setQuery(query);
+		}
 		return url;
 	} else {
-		return new URL(url);
+		return new URL(url, query);
 	}
 };

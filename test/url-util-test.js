@@ -10,32 +10,32 @@ var Query = urlUtil.Query;
 
 describe('url-util', function() {
     var origUrl = 'http://www.company.com:8080/?q=red%20roses#this#is#a#test';
-    
+
     it('should for', function() {
         var testUrl = urlUtil.parse(origUrl);
         expect(testUrl.toString()).to.equal(origUrl);
     });
-    
+
     it('should parse protocol', function() {
         var testUrl = urlUtil.parse(origUrl);
         expect(testUrl.protocol).to.equal('http');
     });
-    
+
     it('should parse host', function() {
         var testUrl = urlUtil.parse(origUrl);
         expect(testUrl.host).to.equal('www.company.com');
     });
-    
+
     it('should parse port', function() {
         var testUrl = urlUtil.parse(origUrl);
         expect(testUrl.port).to.equal('8080');
     });
-    
+
     it('should parse query string', function() {
         var testUrl = urlUtil.parse(origUrl);
         expect(testUrl.getQuery().get('q')).to.equal('red roses');
     });
-    
+
     it('should parse hash', function() {
         var testUrl = urlUtil.parse(origUrl);
         expect(testUrl.hash).to.equal('this#is#a#test');
@@ -82,5 +82,11 @@ describe('url-util', function() {
 
         url = new URL('http://www.company.com/?a=1', {a: '1'});
         expect(url.getQuery().object()).to.deep.equal({a: ['1', '1']});
+    });
+
+    it('should URL and query', function() {
+        var url = URL.parse('http://www.company.com', {q: 'flowers'});
+        expect(url.getHost()).to.equal('www.company.com');
+        expect(url.getQuery().get('q')).to.equal('flowers');
     });
 });
