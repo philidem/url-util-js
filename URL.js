@@ -171,15 +171,6 @@ var URL = module.exports = function URL(url, query) {
 
 var URL_prototype = URL.prototype;
 
-
-URL_prototype.setPath = function(path) {
-	this.path = path;
-};
-
-URL_prototype.getPath = function() {
-	return this.path;
-};
-
 URL_prototype.getQuery = function() {
 	if (!this._query) {
 		this._query = new Query();
@@ -261,29 +252,25 @@ URL_prototype.getPort = function() {
 	return undefined;
 };
 
-URL_prototype.getHost = function() {
-	return this.host;
+URL_prototype.setPort = function(port) {
+	this.port = port;
 };
 
-URL_prototype.getHash = function() {
-	return this.hash;
-};
+// generate simple getters and setters
+['path', 'host', 'hash', 'protocol'].forEach(function(attr) {
+	var title = attr.charAt(0).toUpperCase() + attr.substring(1);
+	URL_prototype['get' + title] = function() {
+		return this[attr];
+	};
 
-URL_prototype.getProtocol = function() {
-	return this.protocol;
-};
+	URL_prototype['set' + title] = function(value) {
+		this[attr] = value;
+	};
 
-URL_prototype.removePort = function() {
-	delete this.port;
-};
-
-URL_prototype.removeQuery = function() {
-	delete this._query;
-};
-
-URL_prototype.removePath = function() {
-	delete this.path;
-};
+	URL_prototype['remove' + title] = function(value) {
+		delete this[attr];
+	};
+});
 
 URL.parse = function(url, query) {
 	if (!url) {

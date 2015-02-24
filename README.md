@@ -1,4 +1,4 @@
 url-js
 ======
 
-JavaScript AMD library for working with URLs for use on client-side or server-side
+JavaScript CommonJS module for working with URLs for use on client-side (browser) or server-side (NodeJS)
