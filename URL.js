@@ -183,6 +183,10 @@ URL_prototype.setQuery = function(query) {
 	this._query = Query.parse(query);
 };
 
+URL_prototype.removeQuery = function() {
+	delete this._query;
+};
+
 /**
 * converts the URL to its string representation
 *
